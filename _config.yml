@@ -1,0 +1,39 @@
+Site Settings
+
+title: Jane Doe | Academic Portfolio
+email: jane.doe@example.edu
+description: >- # this means to ignore newlines until "baseurl:"
+Ph.D. Candidate in Computer Science at the University of Example.
+Researching deep learning, computer vision, and multimodal representations.
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "https://janedoe.github.io" # the base hostname & protocol for your site
+twitter_username: janedoe
+github_username:  janedoe
+
+Build settings
+
+markdown: kramdown
+theme: minima # You can change this later, but default is fine for custom HTML
+plugins:
+
+jekyll-feed
+
+jekyll-seo-tag
+
+Exclude these files from the build
+
+exclude:
+
+Gemfile
+
+Gemfile.lock
+
+node_modules
+
+vendor/bundle/
+
+vendor/cache/
+
+vendor/gems/
+
+vendor/ruby/

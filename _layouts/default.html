@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Use the title from _config.yml -->
+    <title>{{ site.title }}</title>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome for Academic and Social Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class', 
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Merriweather', 'serif'],
+                    },
+                    colors: {
+                        academic: {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.3s ease-in-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Smooth transitions for theme switching */
+        body { transition: background-color 0.3s ease, color 0.3s ease; }
+        .nav-link { transition: color 0.2s ease-in-out; }
+        .nav-link:hover { color: #2563eb; }
+        .dark .nav-link:hover { color: #60a5fa; } 
+        
+        .pub-link { transition: all 0.2s; }
+        .pub-link:hover { background-color: #2563eb; color: white; border-color: #2563eb; }
+        .dark .pub-link:hover { background-color: #3b82f6; color: white; border-color: #3b82f6; }
+        
+        .nav-active { color: #2563eb; font-weight: 600; }
+        .dark .nav-active { color: #60a5fa; }
+    </style>
+
+    <script>
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+</head>
+<body class="bg-academic-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 antialiased flex flex-col min-h-screen transition-colors duration-300">
+
+    <!-- Navigation Bar -->
+    <header class="fixed w-full bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm shadow-sm z-50 border-b border-gray-100 dark:border-gray-800 transition-colors duration-300">
+        <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="{{ '/' | relative_url }}" class="text-xl font-serif font-bold text-academic-900 dark:text-white tracking-tight">Jane Doe</a>
+            
+            <div class="flex items-center gap-6">
+                <!-- Desktop Nav -->
+                <nav class="hidden md:flex space-x-8 text-sm font-medium text-gray-600 dark:text-gray-400">
+                    <a href="{{ '/' | relative_url }}" class="nav-link {% if page.url == '/' %}nav-active{% endif %}">About</a>
+                    <a href="{{ '/research.html' | relative_url }}" class="nav-link {% if page.url contains 'research' %}nav-active{% endif %}">Research</a>
+                    <a href="{{ '/teaching.html' | relative_url }}" class="nav-link {% if page.url contains 'teaching' %}nav-active{% endif %}">Teaching</a>
+                    <a href="{{ '/personal.html' | relative_url }}" class="nav-link {% if page.url contains 'personal' %}nav-active{% endif %}">Personal</a>
+                </nav>
+
+                <!-- Theme Toggle Button -->
+                <button id="theme-toggle" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none rounded-lg text-sm p-2.5 transition-colors">
+                    <i id="theme-toggle-dark-icon" class="fas fa-moon hidden text-lg"></i>
+                    <i id="theme-toggle-light-icon" class="fas fa-sun hidden text-lg"></i>
+                </button>
+
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden text-gray-600 dark:text-gray-400 focus:outline-none p-2" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Nav -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 px-6 py-4 space-y-4 shadow-lg absolute w-full transition-colors duration-300">
+            <a href="{{ '/' | relative_url }}" class="block text-gray-600 dark:text-gray-400 hover:text-academic-600 dark:hover:text-blue-400">About</a>
+            <a href="{{ '/research.html' | relative_url }}" class="block text-gray-600 dark:text-gray-400 hover:text-academic-600 dark:hover:text-blue-400">Research</a>
+            <a href="{{ '/teaching.html' | relative_url }}" class="block text-gray-600 dark:text-gray-400 hover:text-academic-600 dark:hover:text-blue-400">Teaching</a>
+            <a href="{{ '/personal.html' | relative_url }}" class="block text-gray-600 dark:text-gray-400 hover:text-academic-600 dark:hover:text-blue-400">Personal</a>
+        </div>
+    </header>
+
+    <!-- Main Content Container (Jekyll injects page content here) -->
+    <main class="flex-grow max-w-5xl mx-auto px-6 pt-32 pb-16 w-full relative animate-fade-in">
+        {{ content }}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 mt-auto transition-colors duration-300">
+        <div class="max-w-5xl mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+                &copy; <span id="year"></span> Jane Doe. All rights reserved.
+            </p>
+            <p class="text-sm text-gray-400 dark:text-gray-500 text-center md:text-right">
+                Designed with <i class="fas fa-heart text-red-400 mx-1"></i> using HTML & Tailwind CSS.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Scripts for Dark Mode -->
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const darkIcon = document.getElementById('theme-toggle-dark-icon');
+        const lightIcon = document.getElementById('theme-toggle-light-icon');
+
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            lightIcon.classList.remove('hidden');
+        } else {
+            darkIcon.classList.remove('hidden');
+        }
+
+        themeToggleBtn.addEventListener('click', function() {
+            darkIcon.classList.toggle('hidden');
+            lightIcon.classList.toggle('hidden');
+
+            if (localStorage.getItem('color-theme')) {
+                if (localStorage.getItem('color-theme') === 'light') {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('color-theme', 'dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('color-theme', 'light');
+                }
+            } else {
+                if (document.documentElement.classList.contains('dark')) {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('color-theme', 'light');
+                } else {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('color-theme', 'dark');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -3,9 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Use the title from _config.yml -->
-    <title>{{ site.title }}</title>
+    <!-- Jekyll SEO and Title tags -->
+    <title>{{ page.title | default: site.title }}</title>
     
+    <!-- Dark Mode Script (Placed in head to prevent Flash of Unstyled Content) -->
+    <script>
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+
     <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -17,7 +26,7 @@
     
     <script>
         tailwind.config = {
-            darkMode: 'class', 
+            darkMode: 'class',
             theme: {
                 extend: {
                     fontFamily: {
@@ -33,15 +42,6 @@
                             800: '#1e293b',
                             900: '#0f172a',
                         }
-                    },
-                    animation: {
-                        'fade-in': 'fadeIn 0.3s ease-in-out',
-                    },
-                    keyframes: {
-                        fadeIn: {
-                            '0%': { opacity: '0', transform: 'translateY(10px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
-                        }
                     }
                 }
             }
@@ -49,27 +49,13 @@
     </script>
 
     <style>
-        /* Smooth transitions for theme switching */
-        body { transition: background-color 0.3s ease, color 0.3s ease; }
         .nav-link { transition: color 0.2s ease-in-out; }
         .nav-link:hover { color: #2563eb; }
-        .dark .nav-link:hover { color: #60a5fa; } 
-        
+        .dark .nav-link:hover { color: #60a5fa; }
         .pub-link { transition: all 0.2s; }
         .pub-link:hover { background-color: #2563eb; color: white; border-color: #2563eb; }
         .dark .pub-link:hover { background-color: #3b82f6; color: white; border-color: #3b82f6; }
-        
-        .nav-active { color: #2563eb; font-weight: 600; }
-        .dark .nav-active { color: #60a5fa; }
     </style>
-
-    <script>
-        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-    </script>
 </head>
 <body class="bg-academic-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 antialiased flex flex-col min-h-screen transition-colors duration-300">
 
@@ -78,39 +64,46 @@
         <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
             <a href="{{ '/' | relative_url }}" class="text-xl font-serif font-bold text-academic-900 dark:text-white tracking-tight">Moshiur Rahman</a>
             
-            <div class="flex items-center gap-6">
-                <!-- Desktop Nav -->
-                <nav class="hidden md:flex space-x-8 text-sm font-medium text-gray-600 dark:text-gray-400">
-                    <a href="{{ '/' | relative_url }}" class="nav-link {% if page.url == '/' %}nav-active{% endif %}">About</a>
-                    <a href="{{ '/research.html' | relative_url }}" class="nav-link {% if page.url contains 'research' %}nav-active{% endif %}">Research</a>
-                    <a href="{{ '/teaching.html' | relative_url }}" class="nav-link {% if page.url contains 'teaching' %}nav-active{% endif %}">Teaching</a>
-                    <a href="{{ '/personal.html' | relative_url }}" class="nav-link {% if page.url contains 'personal' %}nav-active{% endif %}">Personal</a>
-                </nav>
-
-                <!-- Theme Toggle Button -->
-                <button id="theme-toggle" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none rounded-lg text-sm p-2.5 transition-colors">
-                    <i id="theme-toggle-dark-icon" class="fas fa-moon hidden text-lg"></i>
-                    <i id="theme-toggle-light-icon" class="fas fa-sun hidden text-lg"></i>
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex space-x-8 text-sm font-medium text-gray-600 dark:text-gray-300 items-center">
+                <!-- Highlight active link using Jekyll's page.url -->
+                <a href="{{ '/' | relative_url }}" class="nav-link {% if page.url == '/' %}text-academic-600 dark:text-blue-400{% endif %}">About</a>
+                <a href="{{ '/research.html' | relative_url }}" class="nav-link {% if page.url == '/research.html' %}text-academic-600 dark:text-blue-400{% endif %}">Research</a>
+                <a href="{{ '/teaching.html' | relative_url }}" class="nav-link {% if page.url == '/teaching.html' %}text-academic-600 dark:text-blue-400{% endif %}">Teaching</a>
+                <a href="{{ '/experience.html' | relative_url }}" class="nav-link {% if page.url == '/experience.html' %}text-academic-600 dark:text-blue-400{% endif %}">Experience</a>
+                <a href="{{ '/personal.html' | relative_url }}" class="nav-link {% if page.url == '/personal.html' %}text-academic-600 dark:text-blue-400{% endif %}">Personal</a>
+                
+                <!-- Dark Mode Toggle Button -->
+                <button id="theme-toggle" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none rounded-lg text-sm p-2.5 transition-colors">
+                    <i id="theme-toggle-dark-icon" class="hidden fas fa-moon"></i>
+                    <i id="theme-toggle-light-icon" class="hidden fas fa-sun"></i>
                 </button>
+            </nav>
 
-                <!-- Mobile Menu Button -->
-                <button class="md:hidden text-gray-600 dark:text-gray-400 focus:outline-none p-2" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+            <!-- Mobile Menu and Theme Buttons -->
+            <div class="flex items-center gap-4 md:hidden">
+                <button id="theme-toggle-mobile" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none rounded-lg text-sm p-2 transition-colors">
+                    <i id="theme-toggle-dark-icon-mobile" class="hidden fas fa-moon"></i>
+                    <i id="theme-toggle-light-icon-mobile" class="hidden fas fa-sun"></i>
+                </button>
+                <button class="text-gray-600 dark:text-gray-300 focus:outline-none" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
                     <i class="fas fa-bars text-xl"></i>
                 </button>
             </div>
         </div>
         
         <!-- Mobile Nav -->
-        <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 px-6 py-4 space-y-4 shadow-lg absolute w-full transition-colors duration-300">
-            <a href="{{ '/' | relative_url }}" class="block text-gray-600 dark:text-gray-400 hover:text-academic-600 dark:hover:text-blue-400">About</a>
-            <a href="{{ '/research.html' | relative_url }}" class="block text-gray-600 dark:text-gray-400 hover:text-academic-600 dark:hover:text-blue-400">Research</a>
-            <a href="{{ '/teaching.html' | relative_url }}" class="block text-gray-600 dark:text-gray-400 hover:text-academic-600 dark:hover:text-blue-400">Teaching</a>
-            <a href="{{ '/personal.html' | relative_url }}" class="block text-gray-600 dark:text-gray-400 hover:text-academic-600 dark:hover:text-blue-400">Personal</a>
+        <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 px-6 py-4 space-y-4 shadow-lg transition-colors">
+            <a href="{{ '/' | relative_url }}" class="block text-gray-600 dark:text-gray-300 hover:text-academic-600 dark:hover:text-blue-400">About</a>
+            <a href="{{ '/research.html' | relative_url }}" class="block text-gray-600 dark:text-gray-300 hover:text-academic-600 dark:hover:text-blue-400">Research</a>
+            <a href="{{ '/teaching.html' | relative_url }}" class="block text-gray-600 dark:text-gray-300 hover:text-academic-600 dark:hover:text-blue-400">Teaching</a>
+            <a href="{{ '/experience.html' | relative_url }}" class="block text-gray-600 dark:text-gray-300 hover:text-academic-600 dark:hover:text-blue-400">Experience</a>
+            <a href="{{ '/personal.html' | relative_url }}" class="block text-gray-600 dark:text-gray-300 hover:text-academic-600 dark:hover:text-blue-400">Personal</a>
         </div>
     </header>
 
-    <!-- Main Content Container (Jekyll injects page content here) -->
-    <main class="flex-grow max-w-5xl mx-auto px-6 pt-32 pb-16 w-full relative animate-fade-in">
+    <!-- Main Content Injection -->
+    <main class="flex-grow max-w-5xl mx-auto px-6 pt-32 pb-16 w-full space-y-24">
         {{ content }}
     </main>
 
@@ -118,50 +111,53 @@
     <footer class="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 mt-auto transition-colors duration-300">
         <div class="max-w-5xl mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center gap-4">
             <p class="text-sm text-gray-500 dark:text-gray-400">
-                &copy; <span id="year"></span> Moshiur Rahman. All rights reserved.
+                &copy; <span id="year"></span> {{ site.title }}. All rights reserved.
             </p>
             <p class="text-sm text-gray-400 dark:text-gray-500 text-center md:text-right">
-                Designed with <i class="fas fa-heart text-red-400 mx-1"></i> using HTML & Tailwind CSS.
+                Designed with <i class="fas fa-heart text-red-400 dark:text-red-500 mx-1"></i> using Jekyll & Tailwind CSS.
             </p>
         </div>
+        <script>
+            document.getElementById('year').textContent = new Date().getFullYear();
+        </script>
     </footer>
 
-    <!-- Scripts for Dark Mode -->
+    <!-- Dark Mode Toggle Logic -->
     <script>
-        document.getElementById('year').textContent = new Date().getFullYear();
+        const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+        const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+        const themeToggleDarkIconMobile = document.getElementById('theme-toggle-dark-icon-mobile');
+        const themeToggleLightIconMobile = document.getElementById('theme-toggle-light-icon-mobile');
 
-        const themeToggleBtn = document.getElementById('theme-toggle');
-        const darkIcon = document.getElementById('theme-toggle-dark-icon');
-        const lightIcon = document.getElementById('theme-toggle-light-icon');
-
-        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            lightIcon.classList.remove('hidden');
+        // Set initial icon based on current mode
+        if (document.documentElement.classList.contains('dark')) {
+            themeToggleLightIcon.classList.remove('hidden');
+            themeToggleLightIconMobile.classList.remove('hidden');
         } else {
-            darkIcon.classList.remove('hidden');
+            themeToggleDarkIcon.classList.remove('hidden');
+            themeToggleDarkIconMobile.classList.remove('hidden');
         }
 
-        themeToggleBtn.addEventListener('click', function() {
-            darkIcon.classList.toggle('hidden');
-            lightIcon.classList.toggle('hidden');
+        const toggleTheme = function() {
+            // Toggle icons
+            themeToggleDarkIcon.classList.toggle('hidden');
+            themeToggleLightIcon.classList.toggle('hidden');
+            themeToggleDarkIconMobile.classList.toggle('hidden');
+            themeToggleLightIconMobile.classList.toggle('hidden');
 
-            if (localStorage.getItem('color-theme')) {
-                if (localStorage.getItem('color-theme') === 'light') {
-                    document.documentElement.classList.add('dark');
-                    localStorage.setItem('color-theme', 'dark');
-                } else {
-                    document.documentElement.classList.remove('dark');
-                    localStorage.setItem('color-theme', 'light');
-                }
+            // Toggle document class & set storage
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
             } else {
-                if (document.documentElement.classList.contains('dark')) {
-                    document.documentElement.classList.remove('dark');
-                    localStorage.setItem('color-theme', 'light');
-                } else {
-                    document.documentElement.classList.add('dark');
-                    localStorage.setItem('color-theme', 'dark');
-                }
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
             }
-        });
+        }
+
+        document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+        document.getElementById('theme-toggle-mobile').addEventListener('click', toggleTheme);
     </script>
+
 </body>
 </html>
